@@ -1,131 +1,86 @@
 using System;
 
-namespace CSharpFunctionalExtensions
+namespace CSharpFunctionalExtensions;
+
+public static partial class ResultExtensions
 {
-    public static partial class ResultExtensions
+    /// <summary>
+    ///     Creates a new result from the return value of a given function. If the calling Result is a failure, a new failure result is returned instead.
+    /// </summary>
+    public static Result<K, E> Map<T, K, E>(this Result<T, E> result, Func<T, K> func)
+        where E : IError
     {
-        /// <summary>
-        ///     Creates a new result from the return value of a given function. If the calling Result is a failure, a new failure result is returned instead.
-        /// </summary>
-        public static Result<K, E> Map<T, K, E>(this Result<T, E> result, Func<T, K> func)
-        {
-            if (result.IsFailure)
-                return Result.Failure<K, E>(result.Error);
+        if (result.IsFailure)
+            return Result.Failure<K, E>(result.Error);
 
-            return Result.Success<K, E>(func(result.Value));
-        }
+        return Result.Success<K, E>(func(result.Value));
+    }
 
-        /// <summary>
-        ///     Creates a new result from the return value of a given function. If the calling Result is a failure, a new failure result is returned instead.
-        /// </summary>
-        public static Result<K, E> Map<T, K, E, TContext>(
-            this Result<T, E> result,
-            Func<T, TContext, K> func,
-            TContext context
-        )
-        {
-            if (result.IsFailure)
-                return Result.Failure<K, E>(result.Error);
+    /// <summary>
+    ///     Creates a new result from the return value of a given function. If the calling Result is a failure, a new failure result is returned instead.
+    /// </summary>
+    public static Result<K, E> Map<T, K, E, TContext>(
+        this Result<T, E> result,
+        Func<T, TContext, K> func,
+        TContext context
+    )
+        where E : IError
+    {
+        if (result.IsFailure)
+            return Result.Failure<K, E>(result.Error);
 
-            return Result.Success<K, E>(func(result.Value, context));
-        }
+        return Result.Success<K, E>(func(result.Value, context));
+    }
 
-        /// <summary>
-        ///     Creates a new result from the return value of a given function. If the calling Result is a failure, a new failure result is returned instead.
-        /// </summary>
-        public static Result<K, E> Map<K, E>(this UnitResult<E> result, Func<K> func)
-        {
-            if (result.IsFailure)
-                return Result.Failure<K, E>(result.Error);
+    /// <summary>
+    ///     Creates a new result from the return value of a given function. If the calling Result is a failure, a new failure result is returned instead.
+    /// </summary>
+    public static Result<K> Map<T, K>(this Result<T> result, Func<T, K> func)
+    {
+        if (result.IsFailure)
+            return Result.Failure<K>(result.Error);
 
-            return Result.Success<K, E>(func());
-        }
+        return Result.Success(func(result.Value));
+    }
 
-        /// <summary>
-        ///     Creates a new result from the return value of a given function. If the calling Result is a failure, a new failure result is returned instead.
-        /// </summary>
-        public static Result<K, E> Map<K, E, TContext>(
-            this UnitResult<E> result,
-            Func<TContext, K> func,
-            TContext context
-        )
-        {
-            if (result.IsFailure)
-                return Result.Failure<K, E>(result.Error);
+    /// <summary>
+    ///     Creates a new result from the return value of a given function. If the calling Result is a failure, a new failure result is returned instead.
+    /// </summary>
+    public static Result<K> Map<T, K, TContext>(
+        this Result<T> result,
+        Func<T, TContext, K> func,
+        TContext context
+    )
+    {
+        if (result.IsFailure)
+            return Result.Failure<K>(result.Error);
 
-            return Result.Success<K, E>(func(context));
-        }
+        return Result.Success(func(result.Value, context));
+    }
 
-        /// <summary>
-        ///     Creates a new result from the return value of a given function. If the calling Result is a failure, a new failure result is returned instead.
-        /// </summary>
-        public static Result<K> Map<T, K>(this Result<T> result, Func<T, K> func)
-        {
-            if (result.IsFailure)
-                return Result.Failure<K>(result.Error);
+    /// <summary>
+    ///     Creates a new result from the return value of a given function. If the calling Result is a failure, a new failure result is returned instead.
+    /// </summary>
+    public static Result<K> Map<K>(this Result result, Func<K> func)
+    {
+        if (result.IsFailure)
+            return Result.Failure<K>(result.Error);
 
-            return Result.Success(func(result.Value));
-        }
+        return Result.Success(func());
+    }
 
-        /// <summary>
-        ///     Creates a new result from the return value of a given function. If the calling Result is a failure, a new failure result is returned instead.
-        /// </summary>
-        public static Result<K> Map<T, K, TContext>(
-            this Result<T> result,
-            Func<T, TContext, K> func,
-            TContext context
-        )
-        {
-            if (result.IsFailure)
-                return Result.Failure<K>(result.Error);
+    /// <summary>
+    ///     Creates a new result from the return value of a given function. If the calling Result is a failure, a new failure result is returned instead.
+    /// </summary>
+    public static Result<K> Map<K, TContext>(
+        this Result result,
+        Func<TContext, K> func,
+        TContext context
+    )
+    {
+        if (result.IsFailure)
+            return Result.Failure<K>(result.Error);
 
-            return Result.Success(func(result.Value, context));
-        }
-
-        /// <summary>
-        ///     Creates a new result from the return value of a given function. If the calling Result is a failure, a new failure result is returned instead.
-        /// </summary>
-        public static Result<K> Map<K>(this Result result, Func<K> func)
-        {
-            if (result.IsFailure)
-                return Result.Failure<K>(result.Error);
-
-            return Result.Success(func());
-        }
-
-        /// <summary>
-        ///     Creates a new result from the return value of a given function. If the calling Result is a failure, a new failure result is returned instead.
-        /// </summary>
-        public static Result<K> Map<K, TContext>(
-            this Result result,
-            Func<TContext, K> func,
-            TContext context
-        )
-        {
-            if (result.IsFailure)
-                return Result.Failure<K>(result.Error);
-
-            return Result.Success(func(context));
-        }
-
-        public static Result<Maybe<K>> Map<T, K>(
-            this Result<Maybe<T>> result,
-            Func<T, K> func)
-        {
-            if (result.IsFailure)
-                return Result.Failure<Maybe<K>>(result.Error);
-
-            return Result.Success<Maybe<K>>(result.Value.Map(func));
-        }
-        
-        public static Result<Maybe<K>, E> Map<T, K, E>(
-            this Result<Maybe<T>, E> result,
-            Func<T, K> func)
-        {
-            if (result.IsFailure)
-                return Result.Failure<Maybe<K>, E>(result.Error);
-
-            return Result.Success<Maybe<K>, E>(result.Value.Map(func));
-        }
+        return Result.Success(func(context));
     }
 }

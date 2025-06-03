@@ -1,26 +1,25 @@
 ﻿using System;
 
-namespace CSharpFunctionalExtensions
+namespace CSharpFunctionalExtensions;
+
+public class ResultFailureException : Exception
 {
-    public class ResultFailureException : Exception
-    {
-        public string Error { get; }
+    public IError Error { get; }
 
-        internal ResultFailureException(string error)
-            : base(Result.Messages.ValueIsInaccessibleForFailure(error))
-        {
-            Error = error;
-        }
+    internal ResultFailureException(IError error)
+        : base(Result.Messages.ValueIsInaccessibleForFailure(error))
+    {
+        Error = error;
     }
+}
 
-    public class ResultFailureException<E> : ResultFailureException
+public class ResultFailureException<E> : ResultFailureException
+    where E : IError
+{
+    public new E Error { get; }
+
+    internal ResultFailureException(E error) : base(error)
     {
-        public new E Error { get; }
-
-        internal ResultFailureException(E error)
-            : base(Result.Messages.ValueIsInaccessibleForFailure(error.ToString()))
-        {
-            Error = error;
-        }
+        Error = error;
     }
 }

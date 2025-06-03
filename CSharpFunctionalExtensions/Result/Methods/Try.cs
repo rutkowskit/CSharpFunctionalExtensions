@@ -1,97 +1,62 @@
 ﻿using System;
-using System.Threading.Tasks;
 
-namespace CSharpFunctionalExtensions
+namespace CSharpFunctionalExtensions;
+
+public partial struct Result
 {
-    public partial struct Result
+    /// <summary>
+    ///     Attempts to execute the supplied action. Returns a Result indicating whether the action executed successfully.
+    /// </summary>
+    public static Result Try(Action action, Func<Exception, string> errorHandler = null)
     {
-        /// <summary>
-        ///     Attempts to execute the supplied action. Returns a Result indicating whether the action executed successfully.
-        /// </summary>
-        public static Result Try(Action action, Func<Exception, string> errorHandler = null)
+        errorHandler ??= Configuration.DefaultTryErrorHandler;
+
+        try
         {
-            errorHandler ??= Configuration.DefaultTryErrorHandler;
-
-            try
-            {
-                action();
-                return Success();
-            }
-            catch (Exception exc)
-            {
-                string message = errorHandler(exc);
-                return Failure(message);
-            }
-        }
-
-        /// <summary>
-        ///     Attempts to execute the supplied function. Returns a Result indicating whether the function executed successfully.
-        ///     If the function executed successfully, the result contains its return value.
-        /// </summary>
-        public static Result<T> Try<T>(Func<T> func, Func<Exception, string> errorHandler = null)
-        {
-            errorHandler ??= Configuration.DefaultTryErrorHandler;
-
-            try
-            {
-                return Success(func());
-            }
-            catch (Exception exc)
-            {
-                string message = errorHandler(exc);
-                return Failure<T>(message);
-            }
-        }
-
-        /// <summary>
-        ///     Attempts to execute the supplied function. Returns a Result indicating whether the function executed successfully.
-        ///     If the function executed successfully, the result contains its return value.
-        /// </summary>
-        public static Result<T, E> Try<T, E>(Func<T> func, Func<Exception, E> errorHandler)
-        {
-            try
-            {
-                return Success<T, E>(func());
-            }
-            catch (Exception exc)
-            {
-                E error = errorHandler(exc);
-                return Failure<T, E>(error);
-            }
-        }
-
-        /// <summary>
-        ///     Attempts to execute the supplied action. Returns a UnitResult indicating whether the action executed successfully.
-        /// </summary>
-        public static UnitResult<E> Try<E>(Action action, Func<Exception, E> errorHandler)
-        {
-          try
-          {
             action();
-            return UnitResult.Success<E>();
-          }
-          catch (Exception exc)
-          {
-            E error = errorHandler(exc);
-            return UnitResult.Failure(error);
-          }
+            return Success();
         }
-        
-        /// <summary>
-        ///     Attempts to execute the supplied action. Returns a UnitResult indicating whether the action executed successfully.
-        /// </summary>
-        public static async Task<UnitResult<E>> Try<E>(Func<Task> action, Func<Exception, E> errorHandler)
+        catch (Exception exc)
         {
-          try
-          {
-              await action().DefaultAwait();
-              return UnitResult.Success<E>();
-          }
-          catch (Exception exc)
-          {
-              E error = errorHandler(exc);
-              return UnitResult.Failure(error);
-          }
+            string message = errorHandler(exc);
+            return Failure(message);
+        }
+    }
+
+    /// <summary>
+    ///     Attempts to execute the supplied function. Returns a Result indicating whether the function executed successfully.
+    ///     If the function executed successfully, the result contains its return value.
+    /// </summary>
+    public static Result<T> Try<T>(Func<T> func, Func<Exception, string> errorHandler = null)
+    {
+        errorHandler ??= Configuration.DefaultTryErrorHandler;
+
+        try
+        {
+            return Success(func());
+        }
+        catch (Exception exc)
+        {
+            string message = errorHandler(exc);
+            return Failure<T>(message);
+        }
+    }
+
+    /// <summary>
+    ///     Attempts to execute the supplied function. Returns a Result indicating whether the function executed successfully.
+    ///     If the function executed successfully, the result contains its return value.
+    /// </summary>
+    public static Result<T, E> Try<T, E>(Func<T> func, Func<Exception, E> errorHandler)
+        where E : IError
+    {
+        try
+        {
+            return Success<T, E>(func());
+        }
+        catch (Exception exc)
+        {
+            E error = errorHandler(exc);
+            return Failure<T, E>(error);
         }
     }
 }

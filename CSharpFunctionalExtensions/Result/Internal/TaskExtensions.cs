@@ -14,7 +14,7 @@ namespace CSharpFunctionalExtensions
     {
         public static Task<T> AsCompletedTask<T>(this T obj) => Task.FromResult(obj);
 
-        public static ConfiguredTaskAwaitable DefaultAwait(this System.Threading.Tasks.Task task) =>
+        public static ConfiguredTaskAwaitable DefaultAwait(this Task task) =>
             task.ConfigureAwait(Result.Configuration.DefaultConfigureAwait);
 
         public static ConfiguredTaskAwaitable<T> DefaultAwait<T>(this Task<T> task) =>

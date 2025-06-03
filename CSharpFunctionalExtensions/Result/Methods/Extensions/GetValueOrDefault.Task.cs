@@ -11,7 +11,7 @@ namespace CSharpFunctionalExtensions
             return await result.GetValueOrDefault(defaultValue).DefaultAwait();
         }
 
-        public static async Task<K> GetValueOrDefault<T, K>(this Task<Result<T>> resultTask, Func<T, Task<K>> selector,
+        public static Task<K> GetValueOrDefault<T, K>(this Task<Result<T>> resultTask, Func<T, Task<K>> selector,
             K defaultValue = default)
         {
             var result = await resultTask.DefaultAwait();

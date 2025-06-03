@@ -1,41 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace CSharpFunctionalExtensions;
 
-namespace CSharpFunctionalExtensions
+public partial struct Result
 {
-    public partial struct Result
+    public override string ToString()
     {
-        public override string ToString()
-        {
-            return IsSuccess ? "Success" : $"Failure({Error})";
-        }
+        return IsSuccess ? "Success" : $"Failure({Error})";
     }
+}
 
-
-    public partial struct Result<T>
+public partial struct Result<T>
+{
+    public override string ToString()
     {
-        public override string ToString()
-        {
-            return IsSuccess ? $"Success({Value})" : $"Failure({Error})";
-        }
+        return IsSuccess ? $"Success({Value})" : $"Failure({Error})";
     }
+}
 
 
-    public partial struct Result<T, E>
+public partial struct Result<T, E>
+{
+    public override string ToString()
     {
-        public override string ToString()
-        {
-            return IsSuccess ? $"Success({Value})" : $"Failure({Error})";
-        }
-    }
-
-
-    public partial struct UnitResult<E>
-    {
-        public override string ToString()
-        {
-            return IsSuccess ? "Success" : $"Failure({Error})";
-        }
+        return IsSuccess ? $"Success({Value})" : $"Failure({Error})";
     }
 }

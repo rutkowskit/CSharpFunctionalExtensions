@@ -1,30 +1,29 @@
-﻿namespace CSharpFunctionalExtensions
+﻿using System.Runtime.Serialization;
+
+namespace CSharpFunctionalExtensions;
+
+public interface IResult : ISerializable
 {
-    public interface IResult
-    {
-        bool IsFailure { get; }
-        bool IsSuccess { get; }
-    }
+    bool IsFailure { get; }
+    bool IsSuccess { get; }
+}
 
-    public interface IValue<out T>
-    {
-        T Value { get; }
-    }
+public interface IValue<out T> : ISerializable
+{
+    T Value { get; }
+}
 
-    public interface IError<out E>
-    {
-        E Error { get; }
-    }
+public interface IError : ISerializable;
 
-    public interface IResult<out T, out E> : IValue<T>, IUnitResult<E>
-    {
-    }
+public interface IError<out E> : IError
+{
+    E Error { get; }
+}
 
-    public interface IResult<out T> : IResult<T, string>
-    {
-    }
+public interface IResult<out T, out E> : IResult, IValue<T>, IError<E>
+{
+}
 
-    public interface IUnitResult<out E> : IResult, IError<E>
-    {
-    }
+public interface IResult<out T> : IResult<T, IError>
+{
 }
