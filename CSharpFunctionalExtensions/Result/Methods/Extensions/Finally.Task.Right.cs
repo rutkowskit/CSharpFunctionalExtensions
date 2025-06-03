@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 
 namespace CSharpFunctionalExtensions
@@ -15,12 +15,6 @@ namespace CSharpFunctionalExtensions
         ///     Passes the result to the given function (regardless of success/failure state) to yield a final output value.
         /// </summary>
         public static Task<K> Finally<T, K>(this Result<T> result, Func<Result<T>, Task<K>> func)
-          => func(result);
-
-        /// <summary>
-        ///     Passes the result to the given function (regardless of success/failure state) to yield a final output value.
-        /// </summary>
-        public static Task<K> Finally<K, E>(this UnitResult<E> result, Func<UnitResult<E>, Task<K>> func)
           => func(result);
 
         /// <summary>

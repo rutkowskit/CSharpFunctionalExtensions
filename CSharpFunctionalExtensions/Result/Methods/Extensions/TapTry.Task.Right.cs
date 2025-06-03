@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 
 namespace CSharpFunctionalExtensions
@@ -68,26 +68,6 @@ namespace CSharpFunctionalExtensions
             {
                 string message = errorHandler(exc);
                 return new Result<T>(true, message, default);
-            }
-        }
-
-        /// <summary>
-        ///     Executes the given action if the calling result is a success. Returns the calling result.
-        ///     If there is an exception, returns a new failure Result.
-        /// </summary>
-        public static async Task<UnitResult<E>> TapTry<E>(this UnitResult<E> result, Func<Task> func, Func<Exception, E> errorHandler)
-        {
-            try
-            {
-                if (result.IsSuccess)
-                    await func().DefaultAwait();
-
-                return result;
-            }
-            catch (Exception exc)
-            {
-                var error = errorHandler(exc);
-                return new UnitResult<E>(true, error);
             }
         }
 

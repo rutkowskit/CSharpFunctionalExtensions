@@ -4,53 +4,113 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
 
 
-var code = File.ReadAllText(@"E:\Projects\Contributions\CSharpFunctionalExtensions\CSharpFunctionalExtensions\Result\Methods\Extensions\Compensate.Task.cs", Encoding.UTF8);
+const string CodeDirectory = @"E:\Projects\Contributions\CSharpFunctionalExtensions\CSharpFunctionalExtensions";
 
-var tree = CSharpSyntaxTree.ParseText(code);
-var root = (CompilationUnitSyntax)tree.GetRoot();
-var newRoot = new MethodByTypeRemover("UnitResult").Visit(root);
-
-
-var methods = root.DescendantNodes()
-    .OfType<MethodDeclarationSyntax>();
-
-// List to store matching method names
-var matchingMethods = new List<string>();
-
-foreach (var method in methods)
+var fileEnumerator = Directory.EnumerateFiles(CodeDirectory, "*.cs", SearchOption.AllDirectories);
+foreach (var file in fileEnumerator)
 {
-    // Check if return type is string
-    bool returnsString = method.ReturnType.ToString().Contains("UnitResult");
+    var code = File.ReadAllText(file, Encoding.UTF8);
 
-    // Check if any parameter is string
-    bool hasStringParameter = method.ParameterList.Parameters
-        .Any(param => param.Type?.ToString()?.Contains("UnitResult") ?? false);
-
-    // Add method name if it matches criteria
-    if (returnsString || hasStringParameter)
+    var tree = CSharpSyntaxTree.ParseText(code);
+    var root = (CompilationUnitSyntax)tree.GetRoot();
+    var rewriter = new MethodByTypeRemover("UnitResult");
+    var newRoot = rewriter.Visit(root);
+    if (rewriter.RemovedCount > 0)
     {
-        matchingMethods.Add(method.Identifier.Text);
+        Console.WriteLine($"File: {Path.GetFileName(file)}. Removed: {rewriter.RemovedCount}");
+        var newCode = newRoot.ToFullString();
+        File.WriteAllText(file, newCode, Encoding.UTF8);
     }
-}
-foreach (var methodName in matchingMethods)
-{
-    Console.WriteLine(methodName);
 }
 
 Console.WriteLine("Done");
 
 
+class AddIErrorConstraintRewriter : CSharpSyntaxRewriter
+{
+    private const string ErrorInterfaceName = "IError";
+    private static readonly HashSet<string> ErrorTypeParametersSymbols = ["E", "E2"];
+    private volatile int _removedCount;
+
+    public override SyntaxNode? VisitMethodDeclaration(MethodDeclarationSyntax node)
+    {
+        // Skip if the method is not generic
+        if (node.TypeParameterList == null)
+        {
+            return base.VisitMethodDeclaration(node);
+        }
+
+        // Check if the method has a type parameter named "E"
+        var errorTypeParameters = node.TypeParameterList.Parameters
+            .Where(tp => ErrorTypeParametersSymbols.Contains(tp.Identifier.Text))
+            .ToArray();
+
+        if (errorTypeParameters.Length == 0)
+        {
+            return base.VisitMethodDeclaration(node);
+        }
+
+        var updatedMethod = node;
+        var iErrorType = SyntaxFactory.ParseTypeName(ErrorInterfaceName);
+
+        foreach (var tp in errorTypeParameters)
+        {
+            var constraintClauses = node.ConstraintClauses;
+            var genericTypeName = tp.Identifier.Text;
+            var eConstraint = constraintClauses.FirstOrDefault(cc => cc.Name.Identifier.Text == genericTypeName);
+
+            bool hasIErrorConstraint = eConstraint != null && eConstraint.Constraints.Any(c =>
+                c is TypeConstraintSyntax tcs && tcs.Type.ToString() == ErrorInterfaceName);
+
+            // Create the new "where E : IError" constraint
+
+            var newConstraint = SyntaxFactory.TypeConstraint(iErrorType);
+            var newConstraintClause = SyntaxFactory.TypeParameterConstraintClause(
+                SyntaxFactory.IdentifierName(genericTypeName))
+                .AddConstraints(newConstraint);
+
+            // Add or update the constraint clauses
+            var updatedConstraintClauses = eConstraint == null
+                ? constraintClauses.Add(newConstraintClause)
+                : constraintClauses.Replace(eConstraint, eConstraint.AddConstraints(newConstraint));
+
+            // Update the method with the new constraint clauses
+            updatedMethod = node.WithConstraintClauses(updatedConstraintClauses);
+
+        }
+
+        // Create the new "where E : IError" constraint
+        //var iErrorType = SyntaxFactory.ParseTypeName("IError");
+        //var newConstraint = SyntaxFactory.TypeConstraint(iErrorType);
+        //var newConstraintClause = SyntaxFactory.TypeParameterConstraintClause(
+        //    SyntaxFactory.IdentifierName("E"))
+        //    .AddConstraints(newConstraint);
+
+        //// Add or update the constraint clauses
+        //var updatedConstraintClauses = eConstraint == null
+        //    ? constraintClauses.Add(newConstraintClause)
+        //    : constraintClauses.Replace(eConstraint, eConstraint.AddConstraints(newConstraint));
+
+        //// Update the method with the new constraint clauses
+        //var updatedMethod = node.WithConstraintClauses(updatedConstraintClauses);
+
+        return updatedMethod;
+    }
+}
+
+
+
 class MethodByTypeRemover : CSharpSyntaxRewriter
 {
     private readonly string _typeNamePattern;
+    private volatile int _removedCount;
     public MethodByTypeRemover(string typeNamePattern)
     {
         _typeNamePattern = typeNamePattern;
     }
+    public int RemovedCount => _removedCount;
     public override SyntaxNode? VisitMethodDeclaration(MethodDeclarationSyntax node)
     {
         // Check if return type is string
@@ -63,6 +123,7 @@ class MethodByTypeRemover : CSharpSyntaxRewriter
         // If the method returns string or has a string parameter, remove it (return null)
         if (returnsString || hasStringParameter)
         {
+            Interlocked.Increment(ref _removedCount);
             return null; // Returning null removes the node
         }
 

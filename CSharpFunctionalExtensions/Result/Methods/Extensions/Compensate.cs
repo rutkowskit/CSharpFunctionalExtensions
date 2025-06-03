@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace CSharpFunctionalExtensions
 {
@@ -12,19 +12,6 @@ namespace CSharpFunctionalExtensions
             if (result.IsSuccess)
             {
                 return Result.Success();
-            }
-
-            return func(result.Error);
-        }
-
-        /// <summary>
-        ///     If the given result is a success returns a new success result. Otherwise it returns the result of the given function.
-        /// </summary>
-        public static UnitResult<E> Compensate<E>(this Result result, Func<string, UnitResult<E>> func)
-        {
-            if (result.IsSuccess)
-            {
-                return UnitResult.Success<E>();
             }
 
             return func(result.Error);
@@ -72,50 +59,11 @@ namespace CSharpFunctionalExtensions
         /// <summary>
         ///     If the given result is a success returns a new success result. Otherwise it returns the result of the given function.
         /// </summary>
-        public static Result Compensate<E>(this UnitResult<E> result, Func<E, Result> func)
-        {
-            if (result.IsSuccess)
-            {
-                return Result.Success();
-            }
-
-            return func(result.Error);
-        }
-
-        /// <summary>
-        ///     If the given result is a success returns a new success result. Otherwise it returns the result of the given function.
-        /// </summary>
-        public static UnitResult<E2> Compensate<E, E2>(this UnitResult<E> result, Func<E, UnitResult<E2>> func)
-        {
-            if (result.IsSuccess)
-            {
-                return UnitResult.Success<E2>();
-            }
-
-            return func(result.Error);
-        }
-
-        /// <summary>
-        ///     If the given result is a success returns a new success result. Otherwise it returns the result of the given function.
-        /// </summary>
         public static Result Compensate<T, E>(this Result<T, E> result, Func<E, Result> func)
         {
             if (result.IsSuccess)
             {
                 return Result.Success();
-            }
-
-            return func(result.Error);
-        }
-
-        /// <summary>
-        ///     If the given result is a success returns a new success result. Otherwise it returns the result of the given function.
-        /// </summary>
-        public static UnitResult<E2> Compensate<T, E, E2>(this Result<T, E> result, Func<E, UnitResult<E2>> func)
-        {
-            if (result.IsSuccess)
-            {
-                return UnitResult.Success<E2>();
             }
 
             return func(result.Error);

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 
 namespace CSharpFunctionalExtensions
@@ -28,30 +28,11 @@ namespace CSharpFunctionalExtensions
         {
             return (await resultTask.DefaultAwait()).Match(onSuccess, onFailure);
         }
-        
-        /// <summary>
-        ///     Returns the result of the given <paramref name="onSuccess"/> function if the calling Result is a success. Otherwise, it returns the result of the given <paramref name="onFailure"/> function.
-        /// </summary>
-        public static async Task<K> Match<K, E>(
-            this Task<UnitResult<E>> resultTask,
-            Func<K> onSuccess, 
-            Func<E, K> onFailure)
-        {
-            return (await resultTask.DefaultAwait()).Match(onSuccess, onFailure);
-        }
 
         /// <summary>
         ///     Invokes the given <paramref name="onSuccess"/> action if the calling Result is a success. Otherwise, it invokes the given <paramref name="onFailure"/> action.
         /// </summary>
         public static async Task Match<T, E>(this Task<Result<T, E>> resultTask, Action<T> onSuccess, Action<E> onFailure)
-        {
-            (await resultTask.DefaultAwait()).Match(onSuccess, onFailure);
-        }
-
-        /// <summary>
-        ///     Invokes the given <paramref name="onSuccess"/> action if the calling Result is a success. Otherwise, it invokes the given <paramref name="onFailure"/> action.
-        /// </summary>
-        public static async Task Match<E>(this Task<UnitResult<E>> resultTask, Action onSuccess, Action<E> onFailure)
         {
             (await resultTask.DefaultAwait()).Match(onSuccess, onFailure);
         }

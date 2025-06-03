@@ -25,13 +25,5 @@
         {
             return new Result<T, E>(false, default, value);
         }
-
-        /// <summary>
-        ///     Creates a success result containing the given error.
-        /// </summary>
-        public static UnitResult<E> Success<E>()
-        {
-            return new UnitResult<E>(false, default);
-        }
     }
 }

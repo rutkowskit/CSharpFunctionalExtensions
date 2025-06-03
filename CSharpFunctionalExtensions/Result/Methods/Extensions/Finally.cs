@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace CSharpFunctionalExtensions
 {
@@ -14,12 +14,6 @@ namespace CSharpFunctionalExtensions
         ///     Passes the result to the given function (regardless of success/failure state) to yield a final output value.
         /// </summary>
         public static K Finally<T, K>(this Result<T> result, Func<Result<T>, K> func)
-            => func(result);
-
-        /// <summary>
-        ///     Passes the result to the given function (regardless of success/failure state) to yield a final output value.
-        /// </summary>
-        public static K Finally<K, E>(this UnitResult<E> result, Func<UnitResult<E>, K> func)
             => func(result);
 
         /// <summary>

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 
 namespace CSharpFunctionalExtensions
@@ -27,31 +27,6 @@ namespace CSharpFunctionalExtensions
         )
         {
             Result<T, E> result = await resultTask.DefaultAwait();
-            return result.Map(func, context);
-        }
-
-        /// <summary>
-        ///     Creates a new result from the return value of a given function. If the calling Result is a failure, a new failure result is returned instead.
-        /// </summary>
-        public static async Task<Result<K, E>> Map<K, E>(
-            this Task<UnitResult<E>> resultTask,
-            Func<K> func
-        )
-        {
-            UnitResult<E> result = await resultTask.DefaultAwait();
-            return result.Map(func);
-        }
-
-        /// <summary>
-        ///     Creates a new result from the return value of a given function. If the calling Result is a failure, a new failure result is returned instead.
-        /// </summary>
-        public static async Task<Result<K, E>> Map<K, E, TContext>(
-            this Task<UnitResult<E>> resultTask,
-            Func<TContext, K> func,
-            TContext context
-        )
-        {
-            UnitResult<E> result = await resultTask.DefaultAwait();
             return result.Map(func, context);
         }
 

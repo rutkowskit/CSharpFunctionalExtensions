@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 
 namespace CSharpFunctionalExtensions
@@ -29,24 +29,6 @@ namespace CSharpFunctionalExtensions
         public static async Task<Result<T, E>> TapError<T, E>(this Task<Result<T, E>> resultTask, Action action)
         {
             Result<T, E> result = await resultTask.DefaultAwait();
-            return result.TapError(action);
-        }
-
-        /// <summary>
-        ///     Executes the given action if the calling result is a failure. Returns the calling result.
-        /// </summary>
-        public static async Task<UnitResult<E>> TapError<E>(this Task<UnitResult<E>> resultTask, Action action)
-        {
-            UnitResult<E> result = await resultTask.DefaultAwait();
-            return result.TapError(action);
-        }
-
-        /// <summary>
-        ///     Executes the given action if the calling result is a failure. Returns the calling result.
-        /// </summary>
-        public static async Task<UnitResult<E>> TapError<E>(this Task<UnitResult<E>> resultTask, Action<E> action)
-        {
-            UnitResult<E> result = await resultTask.DefaultAwait();
             return result.TapError(action);
         }
 

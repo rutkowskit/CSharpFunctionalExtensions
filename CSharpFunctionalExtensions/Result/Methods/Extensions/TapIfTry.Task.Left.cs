@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 
 namespace CSharpFunctionalExtensions
@@ -33,16 +33,6 @@ namespace CSharpFunctionalExtensions
         {
             var result = await resultTask.DefaultAwait();
             return result.TapIfTry(condition, action);
-        }
-
-        /// <summary>
-        ///     Executes the given action if the calling result is a success and the condition is true. Returns the calling result.
-        ///     If there is an exception, returns a new failure Result.
-        /// </summary>
-        public static async Task<UnitResult<E>> TapIfTry<E>(this Task<UnitResult<E>> resultTask, bool condition, Action action, Func<Exception, E> errorHandler)
-        {
-            var result = await resultTask.DefaultAwait();
-            return result.TapIfTry(condition, action, errorHandler);
         }
 
         /// <summary>

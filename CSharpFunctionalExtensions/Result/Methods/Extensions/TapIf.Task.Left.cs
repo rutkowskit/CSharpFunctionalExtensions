@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 
 namespace CSharpFunctionalExtensions
@@ -53,17 +53,6 @@ namespace CSharpFunctionalExtensions
         ///     Executes the given action if the calling result is a success and condition is true. Returns the calling result.
         /// </summary>
         public static Task<Result<T, E>> TapIf<T, E>(this Task<Result<T, E>> resultTask, bool condition, Action<T> action)
-        {
-            if (condition)
-                return resultTask.Tap(action);
-            else
-                return resultTask;
-        }
-
-        /// <summary>
-        ///     Executes the given action if the calling result is a success and condition is true. Returns the calling result.
-        /// </summary>
-        public static Task<UnitResult<E>> TapIf<E>(this Task<UnitResult<E>> resultTask, bool condition, Action action)
         {
             if (condition)
                 return resultTask.Tap(action);
@@ -131,19 +120,6 @@ namespace CSharpFunctionalExtensions
             Result<T, E> result = await resultTask.DefaultAwait();
 
             if (result.IsSuccess && predicate(result.Value))
-                return result.Tap(action);
-            else
-                return result;
-        }
-
-        /// <summary>
-        ///     Executes the given action if the calling result is a success and condition is true. Returns the calling result.
-        /// </summary>
-        public static async Task<UnitResult<E>> TapIf<E>(this Task<UnitResult<E>> resultTask, Func<bool> predicate, Action action)
-        {
-            UnitResult<E> result = await resultTask.DefaultAwait();
-
-            if (result.IsSuccess && predicate())
                 return result.Tap(action);
             else
                 return result;

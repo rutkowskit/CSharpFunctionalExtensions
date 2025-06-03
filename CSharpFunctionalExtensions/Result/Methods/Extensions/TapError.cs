@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace CSharpFunctionalExtensions
 {
@@ -34,32 +34,6 @@ namespace CSharpFunctionalExtensions
         ///     Executes the given action if the calling result is a failure. Returns the calling result.
         /// </summary>
         public static Result TapError(this Result result, Action action)
-        {
-            if (result.IsFailure)
-            {
-                action();
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        ///     Executes the given action if the calling result is a failure. Returns the calling result.
-        /// </summary>
-        public static UnitResult<E> TapError<E>(this UnitResult<E> result, Action<E> action)
-        {
-            if (result.IsFailure)
-            {
-                action(result.Error);
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        ///     Executes the given action if the calling result is a failure. Returns the calling result.
-        /// </summary>
-        public static UnitResult<E> TapError<E>(this UnitResult<E> result, Action action)
         {
             if (result.IsFailure)
             {
