@@ -76,7 +76,7 @@ namespace CSharpFunctionalExtensions
         ///     If there is an exception, returns a new failure Result.
         /// </summary>
         public static async Task<Result<T, E>> TapTry<T, E>(this Result<T, E> result, Func<Task> func, Func<Exception, E> errorHandler)
-        {
+where E : IError        {
             try
             {
                 if (result.IsSuccess)
@@ -96,7 +96,7 @@ namespace CSharpFunctionalExtensions
         ///     If there is an exception, returns a new failure Result.
         /// </summary>
         public static async Task<Result<T, E>> TapTry<T, E>(this Result<T, E> result, Func<T, Task> func, Func<Exception, E> errorHandler)
-        {
+where E : IError        {
             try
             {
                 if (result.IsSuccess)

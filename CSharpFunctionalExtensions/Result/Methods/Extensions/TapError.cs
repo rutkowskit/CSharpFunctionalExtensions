@@ -1,85 +1,84 @@
 ﻿using System;
 
-namespace CSharpFunctionalExtensions
+namespace CSharpFunctionalExtensions;
+
+public static partial class ResultExtensions
 {
-    public static partial class ResultExtensions
+    /// <summary>
+    ///     Executes the given action if the calling result is a failure. Returns the calling result.
+    /// </summary>
+    public static Result<T, E> TapError<T, E>(this Result<T, E> result, Action action)
+        where E : IError
     {
-        /// <summary>
-        ///     Executes the given action if the calling result is a failure. Returns the calling result.
-        /// </summary>
-        public static Result<T, E> TapError<T, E>(this Result<T, E> result, Action action)
+        if (result.IsFailure)
         {
-            if (result.IsFailure)
-            {
-                action();
-            }
-
-            return result;
+            action();
         }
 
-        /// <summary>
-        ///     Executes the given action if the calling result is a failure. Returns the calling result.
-        /// </summary>
-        public static Result<T> TapError<T>(this Result<T> result, Action action)
-        {
-            if (result.IsFailure)
-            {
-                action();
-            }
+        return result;
+    }
 
-            return result;
+    /// <summary>
+    ///     Executes the given action if the calling result is a failure. Returns the calling result.
+    /// </summary>
+    public static Result<T> TapError<T>(this Result<T> result, Action action)
+    {
+        if (result.IsFailure)
+        {
+            action();
         }
 
-        /// <summary>
-        ///     Executes the given action if the calling result is a failure. Returns the calling result.
-        /// </summary>
-        public static Result TapError(this Result result, Action action)
-        {
-            if (result.IsFailure)
-            {
-                action();
-            }
+        return result;
+    }
 
-            return result;
+    /// <summary>
+    ///     Executes the given action if the calling result is a failure. Returns the calling result.
+    /// </summary>
+    public static Result TapError(this Result result, Action action)
+    {
+        if (result.IsFailure)
+        {
+            action();
         }
 
-        /// <summary>
-        ///     Executes the given action if the calling result is a failure. Returns the calling result.
-        /// </summary>
-        public static Result<T, E> TapError<T, E>(this Result<T, E> result, Action<E> action)
-        {
-            if (result.IsFailure)
-            {
-                action(result.Error);
-            }
+        return result;
+    }
 
-            return result;
+    /// <summary>
+    ///     Executes the given action if the calling result is a failure. Returns the calling result.
+    /// </summary>
+    public static Result<T, E> TapError<T, E>(this Result<T, E> result, Action<E> action)
+        where E : IError
+    {
+        if (result.IsFailure)
+        {
+            action(result.Error);
         }
 
-        /// <summary>
-        ///     Executes the given action if the calling result is a failure. Returns the calling result.
-        /// </summary>
-        public static Result<T> TapError<T>(this Result<T> result, Action<string> action)
+        return result;
+    }
+
+    /// <summary>
+    ///     Executes the given action if the calling result is a failure. Returns the calling result.
+    /// </summary>
+    public static Result<T> TapError<T>(this Result<T> result, Action<IError> action)
+    {
+        if (result.IsFailure)
         {
-            if (result.IsFailure)
-            {
-                action(result.Error);
-            }
-
-            return result;
+            action(result.Error);
         }
+        return result;
+    }
 
-        /// <summary>
-        ///     Executes the given action if the calling result is a failure. Returns the calling result.
-        /// </summary>
-        public static Result TapError(this Result result, Action<string> action)
+    /// <summary>
+    ///     Executes the given action if the calling result is a failure. Returns the calling result.
+    /// </summary>
+    public static Result TapError(this Result result, Action<IError> action)
+    {
+        if (result.IsFailure)
         {
-            if (result.IsFailure)
-            {
-                action(result.Error);
-            }
-
-            return result;
+            action(result.Error);
         }
+        return result;
     }
 }

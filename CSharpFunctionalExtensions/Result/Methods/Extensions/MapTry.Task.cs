@@ -11,7 +11,7 @@ namespace CSharpFunctionalExtensions
         /// </summary>
         public static async Task<Result<K, E>> MapTry<T, K, E>(this Task<Result<T, E>> resultTask, Func<T, Task<K>> func,
             Func<Exception, E> errorHandler)
-        {
+where E : IError        {
             var result = await resultTask.DefaultAwait();
             return await result.MapTry(func, errorHandler).DefaultAwait();
         }

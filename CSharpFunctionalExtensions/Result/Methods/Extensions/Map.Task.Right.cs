@@ -12,7 +12,7 @@ namespace CSharpFunctionalExtensions
             this Result<T, E> result,
             Func<T, Task<K>> func
         )
-        {
+where E : IError        {
             if (result.IsFailure)
                 return Result.Failure<K, E>(result.Error);
 
@@ -29,7 +29,7 @@ namespace CSharpFunctionalExtensions
             Func<T, TContext, Task<K>> func,
             TContext context
         )
-        {
+where E : IError        {
             if (result.IsFailure)
                 return Result.Failure<K, E>(result.Error);
 

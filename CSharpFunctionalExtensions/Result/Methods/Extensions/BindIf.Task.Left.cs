@@ -18,7 +18,7 @@ namespace CSharpFunctionalExtensions
         }
 
         public static async Task<Result<T, E>> BindIf<T, E>(this Task<Result<T, E>> resultTask, bool condition, Func<T, Result<T, E>> func)
-        {
+where E : IError        {
             var result = await resultTask.DefaultAwait();
             return result.BindIf(condition, func);
         }
@@ -36,7 +36,7 @@ namespace CSharpFunctionalExtensions
         }
 
         public static async Task<Result<T, E>> BindIf<T, E>(this Task<Result<T, E>> resultTask, Func<T, bool> predicate, Func<T, Result<T, E>> func)
-        {
+where E : IError        {
             var result = await resultTask.DefaultAwait();
             return result.BindIf(predicate, func);
         }

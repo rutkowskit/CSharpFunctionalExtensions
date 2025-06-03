@@ -12,7 +12,7 @@ namespace CSharpFunctionalExtensions
             this Task<Result<T, E>> resultTask,
             Func<T, K> func
         )
-        {
+where E : IError        {
             Result<T, E> result = await resultTask.DefaultAwait();
             return result.Map(func);
         }
@@ -25,7 +25,7 @@ namespace CSharpFunctionalExtensions
             Func<T, TContext, K> func,
             TContext context
         )
-        {
+where E : IError        {
             Result<T, E> result = await resultTask.DefaultAwait();
             return result.Map(func, context);
         }

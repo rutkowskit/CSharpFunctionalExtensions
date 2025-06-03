@@ -10,7 +10,7 @@ namespace CSharpFunctionalExtensions
         /// </summary>
         public static Result<K, E> MapTry<T, K, E>(this Result<T, E> result, Func<T, K> func,
             Func<Exception, E> errorHandler)
-        {
+where E : IError        {
             return result.IsFailure
                 ? Result.Failure<K, E>(result.Error)
                 : Result.Try(() => func(result.Value), errorHandler);  

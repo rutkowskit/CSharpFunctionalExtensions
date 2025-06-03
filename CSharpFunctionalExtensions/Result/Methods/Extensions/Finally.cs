@@ -20,6 +20,6 @@ namespace CSharpFunctionalExtensions
         ///     Passes the result to the given function (regardless of success/failure state) to yield a final output value.
         /// </summary>
         public static K Finally<T, K, E>(this Result<T, E> result, Func<Result<T, E>, K> func)
-            => func(result);
+where E : IError            => func(result);
     }
 }

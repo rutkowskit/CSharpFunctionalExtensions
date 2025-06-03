@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 
@@ -47,7 +47,7 @@ namespace CSharpFunctionalExtensions
         /// </summary>
         public static Result<T, E> EnsureNotNull<T, E>(this Result<T?, E> result, E error)
             where T : class
-        {
+where E : IError        {
             return result.Ensure(value => value != null, error).Map(value => value!);
         }
 
@@ -56,7 +56,7 @@ namespace CSharpFunctionalExtensions
         /// </summary>
         public static Result<T, E> EnsureNotNull<T, E>(this Result<T?, E> result, E error)
             where T : struct
-        {
+where E : IError        {
             return result.Ensure(value => value != null, error).Map(value => value!.Value);
         }
 
@@ -65,7 +65,7 @@ namespace CSharpFunctionalExtensions
         /// </summary>
         public static Result<T, E> EnsureNotNull<T, E>(this Result<T?, E> result, Func<E> errorFactory)
             where T : class
-        {
+where E : IError        {
             return result.Ensure(value => value != null, _ => errorFactory()).Map(value => value!);
         }
 
@@ -74,7 +74,7 @@ namespace CSharpFunctionalExtensions
         /// </summary>
         public static Result<T, E> EnsureNotNull<T, E>(this Result<T?, E> result, Func<E> errorFactory)
             where T : struct
-        {
+where E : IError        {
             return result.Ensure(value => value != null, _ => errorFactory()).Map(value => value!.Value);
         }
     }

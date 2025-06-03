@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace CSharpFunctionalExtensions;
 public static partial class ResultExtensions

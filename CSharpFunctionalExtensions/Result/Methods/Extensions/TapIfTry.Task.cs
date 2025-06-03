@@ -82,7 +82,7 @@ namespace CSharpFunctionalExtensions
         ///     If there is an exception, returns a new failure Result.
         /// </summary>
         public static async Task<Result<T, E>> TapIfTry<T, E>(this Task<Result<T, E>> resultTask, bool condition, Func<Task> func, Func<Exception, E> errorHandler)
-        {
+where E : IError        {
             var result = await resultTask.DefaultAwait();
 
             try
@@ -104,7 +104,7 @@ namespace CSharpFunctionalExtensions
         ///     If there is an exception, returns a new failure Result.
         /// </summary>
         public static async Task<Result<T, E>> TapIfTry<T, E>(this Task<Result<T, E>> resultTask, bool condition, Func<T, Task> func, Func<Exception, E> errorHandler)
-        {
+where E : IError        {
             var result = await resultTask.DefaultAwait();
 
             try
@@ -174,7 +174,7 @@ namespace CSharpFunctionalExtensions
         ///     If there is an exception, returns a new failure Result.
         /// </summary>
         public static async Task<Result<T, E>> TapIfTry<T, E>(this Task<Result<T, E>> resultTask, Func<T, bool> predicate, Func<Task> func, Func<Exception, E> errorHandler)
-        {
+where E : IError        {
             var result = await resultTask.DefaultAwait();
 
             try
@@ -196,7 +196,7 @@ namespace CSharpFunctionalExtensions
         ///     If there is an exception, returns a new failure Result.
         /// </summary>
         public static async Task<Result<T, E>> TapIfTry<T, E>(this Task<Result<T, E>> resultTask, Func<T, bool> predicate, Func<T, Task> func, Func<Exception, E> errorHandler)
-        {
+where E : IError        {
             var result = await resultTask.DefaultAwait();
 
             try

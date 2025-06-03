@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace CSharpFunctionalExtensions;
 
@@ -9,7 +9,7 @@ public static partial class ResultExtensions
     /// </summary>
     /// T
     public static K Match<T, K, E>(this Result<T, E> result, Func<T, K> onSuccess, Func<E, K> onFailure)
-    {
+where E : IError    {
         return result.IsSuccess
             ? onSuccess(result.Value)
             : onFailure(result.Error);
@@ -42,7 +42,7 @@ public static partial class ResultExtensions
     /// </summary>
     /// T
     public static void Match<T, E>(this Result<T, E> result, Action<T> onSuccess, Action<E> onFailure)
-    {
+where E : IError    {
         if (result.IsSuccess)
             onSuccess(result.Value);
         else

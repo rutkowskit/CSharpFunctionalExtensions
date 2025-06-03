@@ -28,7 +28,7 @@ namespace CSharpFunctionalExtensions
         /// </summary>
         public static async Task<K> Finally<T, K, E>(this Task<Result<T, E>> resultTask,
             Func<Result<T, E>, Task<K>> func)
-        {
+where E : IError        {
             Result<T, E> result = await resultTask.DefaultAwait();
             return await func(result).DefaultAwait();
         }

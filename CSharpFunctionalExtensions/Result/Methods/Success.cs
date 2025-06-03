@@ -22,7 +22,7 @@
         ///     Creates a success result containing the given value.
         /// </summary>
         public static Result<T, E> Success<T, E>(T value)
-        {
+where E : IError        {
             return new Result<T, E>(false, default, value);
         }
     }

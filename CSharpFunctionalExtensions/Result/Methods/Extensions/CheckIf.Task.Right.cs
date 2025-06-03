@@ -28,7 +28,7 @@ namespace CSharpFunctionalExtensions
         }
 
         public static Task<Result<T, E>> CheckIf<T, K, E>(this Result<T, E> result, bool condition, Func<T, Task<Result<K, E>>> func)
-        {
+where E : IError        {
             if (condition)
                 return result.Check(func);
             else
@@ -52,7 +52,7 @@ namespace CSharpFunctionalExtensions
         }
 
         public static Task<Result<T, E>> CheckIf<T, K, E>(this Result<T, E> result, Func<T, bool> predicate, Func<T, Task<Result<K, E>>> func)
-        {
+where E : IError        {
             if (result.IsSuccess && predicate(result.Value))
                 return result.Check(func);
             else

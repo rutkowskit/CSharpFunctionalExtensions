@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 
 namespace CSharpFunctionalExtensions
@@ -31,7 +31,7 @@ namespace CSharpFunctionalExtensions
             bool condition,
             Func<T, T> func
         )
-        {
+where E : IError        {
             var result = await resultTask.DefaultAwait();
             return result.MapIf(condition, func);
         }
@@ -42,7 +42,7 @@ namespace CSharpFunctionalExtensions
             Func<T, TContext, T> func,
             TContext context
         )
-        {
+where E : IError        {
             var result = await resultTask.DefaultAwait();
             return result.MapIf(condition, func, context);
         }
@@ -73,7 +73,7 @@ namespace CSharpFunctionalExtensions
             Func<T, bool> predicate,
             Func<T, T> func
         )
-        {
+where E : IError        {
             var result = await resultTask.DefaultAwait();
             return result.MapIf(predicate, func);
         }
@@ -84,7 +84,7 @@ namespace CSharpFunctionalExtensions
             Func<T, TContext, T> func,
             TContext context
         )
-        {
+where E : IError        {
             var result = await resultTask.DefaultAwait();
             return result.MapIf(predicate, func, context);
         }

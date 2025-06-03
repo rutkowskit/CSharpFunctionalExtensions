@@ -27,7 +27,7 @@ namespace CSharpFunctionalExtensions
         ///     If the calling result is a success, the given function is executed and its Result is checked. If this Result is a failure, it is returned. Otherwise, the calling result is returned.
         /// </summary>
         public static async Task<Result<T, E>> Check<T, K, E>(this Task<Result<T, E>> resultTask, Func<T, Result<K, E>> func)
-        {
+where E : IError        {
             Result<T, E> result = await resultTask.DefaultAwait();
             return result.Check(func);
         }

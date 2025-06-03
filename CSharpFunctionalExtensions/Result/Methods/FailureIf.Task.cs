@@ -27,7 +27,7 @@ namespace CSharpFunctionalExtensions
         ///     Creates a result whose success/failure depends on the supplied predicate. Opposite of SuccessIf().
         /// </summary>
         public static async Task<Result<T, E>> FailureIf<T, E>(Func<Task<bool>> failurePredicate, T value, E error)
-        {
+where E : IError        {
             bool isFailure = await failurePredicate().DefaultAwait();
             return SuccessIf(!isFailure, value, error);
         }

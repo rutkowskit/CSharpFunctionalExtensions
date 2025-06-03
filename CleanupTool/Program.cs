@@ -9,17 +9,20 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 const string CodeDirectory = @"E:\Projects\Contributions\CSharpFunctionalExtensions\CSharpFunctionalExtensions";
 
 var fileEnumerator = Directory.EnumerateFiles(CodeDirectory, "*.cs", SearchOption.AllDirectories);
+//var rewriter = new MethodByTypeRemover("UnitResult");
+var rewriter = new AddIErrorConstraintRewriter();
+
 foreach (var file in fileEnumerator)
 {
     var code = File.ReadAllText(file, Encoding.UTF8);
 
     var tree = CSharpSyntaxTree.ParseText(code);
     var root = (CompilationUnitSyntax)tree.GetRoot();
-    var rewriter = new MethodByTypeRemover("UnitResult");
+
     var newRoot = rewriter.Visit(root);
-    if (rewriter.RemovedCount > 0)
+    if (rewriter.ChangesCount > 0)
     {
-        Console.WriteLine($"File: {Path.GetFileName(file)}. Removed: {rewriter.RemovedCount}");
+        Console.WriteLine($"File: {Path.GetFileName(file)}. Removed: {rewriter.ChangesCount}");
         var newCode = newRoot.ToFullString();
         File.WriteAllText(file, newCode, Encoding.UTF8);
     }
@@ -33,6 +36,8 @@ class AddIErrorConstraintRewriter : CSharpSyntaxRewriter
     private const string ErrorInterfaceName = "IError";
     private static readonly HashSet<string> ErrorTypeParametersSymbols = ["E", "E2"];
     private volatile int _removedCount;
+
+    public int ChangesCount => _removedCount;
 
     public override SyntaxNode? VisitMethodDeclaration(MethodDeclarationSyntax node)
     {
@@ -54,22 +59,28 @@ class AddIErrorConstraintRewriter : CSharpSyntaxRewriter
 
         var updatedMethod = node;
         var iErrorType = SyntaxFactory.ParseTypeName(ErrorInterfaceName);
+        var constraintClauses = node.ConstraintClauses;
 
         foreach (var tp in errorTypeParameters)
         {
-            var constraintClauses = node.ConstraintClauses;
+
             var genericTypeName = tp.Identifier.Text;
             var eConstraint = constraintClauses.FirstOrDefault(cc => cc.Name.Identifier.Text == genericTypeName);
 
             bool hasIErrorConstraint = eConstraint != null && eConstraint.Constraints.Any(c =>
                 c is TypeConstraintSyntax tcs && tcs.Type.ToString() == ErrorInterfaceName);
 
-            // Create the new "where E : IError" constraint
+            if (hasIErrorConstraint)
+            {
+                continue;
+            }
 
+            // Create the new "where E. : IError" constraint
             var newConstraint = SyntaxFactory.TypeConstraint(iErrorType);
-            var newConstraintClause = SyntaxFactory.TypeParameterConstraintClause(
-                SyntaxFactory.IdentifierName(genericTypeName))
-                .AddConstraints(newConstraint);
+            var newConstraintClause = SyntaxFactory
+                .TypeParameterConstraintClause(SyntaxFactory.IdentifierName(genericTypeName))
+                .AddConstraints(newConstraint)
+                .NormalizeWhitespace(); // Ensure proper spacing in the constraint clause;
 
             // Add or update the constraint clauses
             var updatedConstraintClauses = eConstraint == null
@@ -77,24 +88,9 @@ class AddIErrorConstraintRewriter : CSharpSyntaxRewriter
                 : constraintClauses.Replace(eConstraint, eConstraint.AddConstraints(newConstraint));
 
             // Update the method with the new constraint clauses
-            updatedMethod = node.WithConstraintClauses(updatedConstraintClauses);
-
+            updatedMethod = updatedMethod.WithConstraintClauses(updatedConstraintClauses);
+            Interlocked.Increment(ref _removedCount);
         }
-
-        // Create the new "where E : IError" constraint
-        //var iErrorType = SyntaxFactory.ParseTypeName("IError");
-        //var newConstraint = SyntaxFactory.TypeConstraint(iErrorType);
-        //var newConstraintClause = SyntaxFactory.TypeParameterConstraintClause(
-        //    SyntaxFactory.IdentifierName("E"))
-        //    .AddConstraints(newConstraint);
-
-        //// Add or update the constraint clauses
-        //var updatedConstraintClauses = eConstraint == null
-        //    ? constraintClauses.Add(newConstraintClause)
-        //    : constraintClauses.Replace(eConstraint, eConstraint.AddConstraints(newConstraint));
-
-        //// Update the method with the new constraint clauses
-        //var updatedMethod = node.WithConstraintClauses(updatedConstraintClauses);
 
         return updatedMethod;
     }
@@ -110,7 +106,7 @@ class MethodByTypeRemover : CSharpSyntaxRewriter
     {
         _typeNamePattern = typeNamePattern;
     }
-    public int RemovedCount => _removedCount;
+    public int ChangesCount => _removedCount;
     public override SyntaxNode? VisitMethodDeclaration(MethodDeclarationSyntax node)
     {
         // Check if return type is string

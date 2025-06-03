@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Threading.Tasks;
@@ -39,25 +39,25 @@ namespace CSharpFunctionalExtensions
 
         public static Task<Result<T, E>> EnsureNotNull<T, E>(this Task<Result<T?, E>> resultTask, E error)
             where T : class
-        {
+where E : IError        {
             return resultTask.Ensure(value => value != null, error).Map(value => value!);
         }
 
         public static Task<Result<T, E>> EnsureNotNull<T, E>(this Task<Result<T?, E>> resultTask, E error)
             where T : struct
-        {
+where E : IError        {
             return resultTask.Ensure(value => value != null, error).Map(value => value!.Value);
         }
 
         public static Task<Result<T, E>> EnsureNotNull<T, E>(this Task<Result<T?, E>> resultTask, Func<Task<E>> errorFactory)
             where T : class
-        {
+where E : IError        {
             return resultTask.Ensure(value => Task.FromResult(value != null), _ => errorFactory()).Map(value => value!);
         }
 
         public static Task<Result<T, E>> EnsureNotNull<T, E>(this Task<Result<T?, E>> resultTask, Func<Task<E>> errorFactory)
             where T : struct
-        {
+where E : IError        {
             return resultTask.Ensure(value => Task.FromResult(value != null), _ => errorFactory()).Map(value => value!.Value);
         }
     }

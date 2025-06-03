@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace CSharpFunctionalExtensions
 {
@@ -13,7 +13,7 @@ namespace CSharpFunctionalExtensions
         /// <summary>
         ///     Returns a new failure result if the predicate is true. Otherwise returns the starting result.
         /// </summary>
-        public static Result<T, E> EnsureNot<T, E>(this Result<T, E> result, Func<T, bool> test, E error) =>
+        public static Result<T, E> EnsureNot<T, E>(this Result<T, E> result, Func<T, bool> test, E error) where E : IError=>
             result.Ensure(v => !test(v), error);
     }
 }

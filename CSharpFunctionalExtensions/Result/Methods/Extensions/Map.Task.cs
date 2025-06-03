@@ -12,7 +12,7 @@ namespace CSharpFunctionalExtensions
             this Task<Result<T, E>> resultTask,
             Func<T, Task<K>> func
         )
-        {
+where E : IError        {
             Result<T, E> result = await resultTask.DefaultAwait();
 
             if (result.IsFailure)
@@ -31,7 +31,7 @@ namespace CSharpFunctionalExtensions
             Func<T, TContext, Task<K>> func,
             TContext context
         )
-        {
+where E : IError        {
             Result<T, E> result = await resultTask.DefaultAwait();
 
             if (result.IsFailure)

@@ -1,4 +1,4 @@
-#if NETSTANDARD2_0 || NET5_0_OR_GREATER
+﻿#if NETSTANDARD2_0 || NET5_0_OR_GREATER
 using System;
 using System.Threading.Tasks;
 
@@ -6,7 +6,7 @@ namespace CSharpFunctionalExtensions
 {
     public static partial class ResultExtensions
     {
-        public static Task<Result<K, E>> BindWithTransactionScope<T, K, E>(this Result<T, E> self, Func<T, Task<Result<K, E>>> f)
+        public static Task<Result<K, E>> BindWithTransactionScope<T, K, E>(this Result<T, E> self, Func<T, Task<Result<K, E>>> f) where E : IError
             => WithTransactionScope(() => self.Bind(f));
 
         public static Task<Result<K>> BindWithTransactionScope<T, K>(this Result<T> self, Func<T, Task<Result<K>>> f)

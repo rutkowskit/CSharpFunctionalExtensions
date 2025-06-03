@@ -42,7 +42,7 @@ namespace CSharpFunctionalExtensions
         ///     Executes the given action if the calling result is a success. Returns the calling result.
         /// </summary>
         public static async Task<Result<T, E>> Tap<T, E>(this Result<T, E> result, Func<Task> func)
-        {
+where E : IError        {
             if (result.IsSuccess)
                 await func().DefaultAwait();
 
@@ -53,7 +53,7 @@ namespace CSharpFunctionalExtensions
         ///     Executes the given action if the calling result is a success. Returns the calling result.
         /// </summary>
         public static async Task<Result<T, E>> Tap<T, E>(this Result<T, E> result, Func<T, Task> func)
-        {
+where E : IError        {
             if (result.IsSuccess)
                 await func(result.Value).DefaultAwait();
 

@@ -18,7 +18,7 @@ namespace CSharpFunctionalExtensions
         /// <returns>Binding result</returns>
         public static async Task<Result<K, E>> BindTry<T, K, E>(this Result<T, E> result, Func<T, Task<Result<K, E>>> func,
             Func<Exception, E> errorHandler)
-        {
+where E : IError        {
             return result.IsFailure
                 ? Result.Failure<K, E>(result.Error)
                 : await Result.Try(() => func(result.Value),errorHandler).Bind(r => r).DefaultAwait();

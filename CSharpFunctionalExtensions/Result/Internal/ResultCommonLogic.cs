@@ -38,6 +38,7 @@ internal static class ResultCommonLogic
     }
 
     internal static void GetObjectData<T, E>(Result<T, E> result, SerializationInfo info)
+        where E : IError
     {
         GetObjectDataCommon(result, info);
         if (result.IsFailure)
@@ -52,6 +53,7 @@ internal static class ResultCommonLogic
     }
 
     internal static bool ErrorStateGuard<E>(bool isFailure, E error)
+        where E : IError
     {
         if (isFailure)
         {
@@ -67,13 +69,11 @@ internal static class ResultCommonLogic
         return isFailure;
     }
 
-    internal static E GetErrorWithSuccessGuard<E>(bool isFailure, E error) =>
+    internal static E GetErrorWithSuccessGuard<E>(bool isFailure, E error) where E : IError =>
         isFailure ? error : throw new ResultSuccessException();
 
-    internal static SerializationValue<IError> DeserializeError(SerializationInfo info)
-        => Deserialize<IError>(info);
-
     internal static SerializationValue<E> Deserialize<E>(SerializationInfo info)
+        where E : IError
     {
         bool isFailure = info.GetBoolean("IsFailure");
 
@@ -81,15 +81,15 @@ internal static class ResultCommonLogic
         return new SerializationValue<E>(isFailure, error);
     }
 
-    internal static E DeserializeProperty<T, E>(this T obj,
+    internal static K DeserializeProperty<T, K>(this T obj,
         SerializationInfo info,
-        Expression<Func<T, E>> propertyExpression)
+        Expression<Func<T, K>> propertyExpression)
     {
         var propertyName = propertyExpression.GetPropertyName();
-        return (E)info.GetValue(propertyName, typeof(E)) ?? default;
+        return (K)info.GetValue(propertyName, typeof(K)) ?? default;
     }
 
-    internal static string GetPropertyName<T, E>(this Expression<Func<T, E>> propertyExpression)
+    internal static string GetPropertyName<T, K>(this Expression<Func<T, K>> propertyExpression)
     {
         MemberExpression memberExpression = propertyExpression.Body as MemberExpression
             ?? (propertyExpression.Body as UnaryExpression)?.Operand as MemberExpression;
@@ -98,7 +98,6 @@ internal static class ResultCommonLogic
         {
             throw new ArgumentException("Expression must be a property access expression.");
         }
-
         return memberExpression.Member.Name;
     }
 }

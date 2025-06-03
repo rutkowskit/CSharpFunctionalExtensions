@@ -49,7 +49,7 @@ namespace CSharpFunctionalExtensions
         ///     If the function executed successfully, the result contains its return value.
         /// </summary>
         public static async Task<Result<T, E>> Try<T, E>(Func<Task<T>> func, Func<Exception, E> errorHandler)
-        {
+where E : IError        {
             try
             {
                 var result = await func().DefaultAwait();

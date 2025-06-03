@@ -26,7 +26,7 @@ namespace CSharpFunctionalExtensions
         }
 
         public static Task<Result<T, E>> BindIf<T, E>(this Result<T, E> result, bool condition, Func<T, Task<Result<T, E>>> func)
-        {
+where E : IError        {
             if (!condition)
             {
                 return result.AsCompletedTask();
@@ -56,7 +56,7 @@ namespace CSharpFunctionalExtensions
         }
 
         public static Task<Result<T, E>> BindIf<T, E>(this Result<T, E> result, Func<T, bool> predicate, Func<T, Task<Result<T, E>>> func)
-        {
+where E : IError        {
             if (!result.IsSuccess || !predicate(result.Value))
             {
                 return result.AsCompletedTask();

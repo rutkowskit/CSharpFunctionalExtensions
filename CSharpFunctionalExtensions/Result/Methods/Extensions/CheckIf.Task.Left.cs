@@ -22,7 +22,7 @@ namespace CSharpFunctionalExtensions
         }
 
         public static Task<Result<T, E>> CheckIf<T, K, E>(this Task<Result<T, E>> resultTask, bool condition, Func<T, Result<K, E>> func)
-        {
+where E : IError        {
             if (condition)
                 return resultTask.Check(func);
             else
@@ -50,7 +50,7 @@ namespace CSharpFunctionalExtensions
         }
 
         public static async Task<Result<T, E>> CheckIf<T, K, E>(this Task<Result<T, E>> resultTask, Func<T, bool> predicate, Func<T, Result<K, E>> func)
-        {
+where E : IError        {
             Result<T, E> result = await resultTask.DefaultAwait();
 
             if (result.IsSuccess && predicate(result.Value))

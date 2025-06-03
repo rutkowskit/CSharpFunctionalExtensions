@@ -43,7 +43,7 @@ namespace CSharpFunctionalExtensions
         ///     Executes the given action if the calling result is a success and condition is true. Returns the calling result.
         /// </summary>
         public static Task<Result<T, E>> TapIf<T, E>(this Result<T, E> result, bool condition, Func<Task> func)
-        {
+where E : IError        {
             if (condition)
                 return result.Tap(func);
             else
@@ -54,7 +54,7 @@ namespace CSharpFunctionalExtensions
         ///     Executes the given action if the calling result is a success and condition is true. Returns the calling result.
         /// </summary>
         public static Task<Result<T, E>> TapIf<T, E>(this Result<T, E> result, bool condition, Func<T, Task> func)
-        {
+where E : IError        {
             if (condition)
                 return result.Tap(func);
             else
@@ -87,7 +87,7 @@ namespace CSharpFunctionalExtensions
         ///     Executes the given action if the calling result is a success and condition is true. Returns the calling result.
         /// </summary>
         public static Task<Result<T, E>> TapIf<T, E>(this Result<T, E> result, Func<T, bool> predicate, Func<Task> func)
-        {
+where E : IError        {
             if (result.IsSuccess && predicate(result.Value))
                 return result.Tap(func);
             else
@@ -98,7 +98,7 @@ namespace CSharpFunctionalExtensions
         ///     Executes the given action if the calling result is a success and condition is true. Returns the calling result.
         /// </summary>
         public static Task<Result<T, E>> TapIf<T, E>(this Result<T, E> result, Func<T, bool> predicate, Func<T, Task> func)
-        {
+where E : IError        {
             if (result.IsSuccess && predicate(result.Value))
                 return result.Tap(func);
             else
