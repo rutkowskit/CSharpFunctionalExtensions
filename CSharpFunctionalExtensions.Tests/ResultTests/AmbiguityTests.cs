@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Runtime.Serialization;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace CSharpFunctionalExtensions.Tests.ResultTests;
@@ -43,8 +44,11 @@ public class AmbiguityTests
     {
     }
 
-    private class Error
+    private class Error : IError
     {
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+        }
     }
 
     class T1
@@ -55,7 +59,10 @@ public class AmbiguityTests
     {
     }
 
-    class E
+    class E : IError
     {
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+        }
     }
 }

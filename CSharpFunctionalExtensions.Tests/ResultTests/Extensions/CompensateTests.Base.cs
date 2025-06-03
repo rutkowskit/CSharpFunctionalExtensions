@@ -1,250 +1,177 @@
-﻿using FluentAssertions;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using FluentAssertions;
 
-namespace CSharpFunctionalExtensions.Tests.ResultTests.Extensions
+namespace CSharpFunctionalExtensions.Tests.ResultTests.Extensions;
+
+public abstract class CompensateTestsBase : TestBase
 {
-    public abstract class CompensateTestsBase : TestBase
+    protected bool funcExecuted;
+
+    protected CompensateTestsBase()
     {
-        protected bool funcExecuted;
-
-        protected CompensateTestsBase()
-        {
-            funcExecuted = false;
-        }
-
-        protected Result GetSuccessResult(string _)
-        {
-            funcExecuted.Should().BeFalse();
-
-            funcExecuted = true;
-            return Result.Success();
-        }
-
-        protected Result GetErrorResult(string error)
-        {
-            funcExecuted.Should().BeFalse();
-
-            funcExecuted = true;
-            return Result.Failure(error);
-        }
+        funcExecuted = false;
+    }
 
-        protected Result GetSuccessResult(E _)
-        {
-            funcExecuted.Should().BeFalse();
+    protected Result GetSuccessResult(IError _)
+    {
+        funcExecuted.Should().BeFalse();
 
-            funcExecuted = true;
-            return Result.Success();
-        }
+        funcExecuted = true;
+        return Result.Success();
+    }
 
-        protected Result GetErrorResult(E error)
-        {
-            funcExecuted.Should().BeFalse();
+    protected Result GetErrorResult(IError error)
+    {
+        funcExecuted.Should().BeFalse();
 
-            funcExecuted = true;
-            return Result.Failure(ErrorMessage);
-        }
+        funcExecuted = true;
+        return Result.Failure(error);
+    }
 
-        protected UnitResult<E> GetSuccessUnitResult(string _)
-        {
-            funcExecuted.Should().BeFalse();
+    protected Result GetSuccessResult(E _)
+    {
+        funcExecuted.Should().BeFalse();
 
-            funcExecuted = true;
-            return UnitResult.Success<E>();
-        }
+        funcExecuted = true;
+        return Result.Success();
+    }
 
-        protected UnitResult<E> GetErrorUnitResult(string _)
-        {
-            funcExecuted.Should().BeFalse();
+    protected Result GetErrorResult(E error)
+    {
+        funcExecuted.Should().BeFalse();
 
-            funcExecuted = true;
-            return UnitResult.Failure(E.Value);
-        }
+        funcExecuted = true;
+        return Result.Failure(ErrorMessage);
+    }
 
-        protected UnitResult<E2> GetSuccessUnitResult(E _)
-        {
-            funcExecuted.Should().BeFalse();
+    protected Result<T> GetSuccessValueResult(IError _)
+    {
+        funcExecuted.Should().BeFalse();
 
-            funcExecuted = true;
-            return UnitResult.Success<E2>();
-        }
+        funcExecuted = true;
+        return Result.Success(T.Value);
+    }
 
-        protected UnitResult<E2> GetErrorUnitResult(E _)
-        {
-            funcExecuted.Should().BeFalse();
+    protected Result<T> GetErrorValueResult(IError error)
+    {
+        funcExecuted.Should().BeFalse();
 
-            funcExecuted = true;
-            return UnitResult.Failure(E2.Value);
-        }
+        funcExecuted = true;
+        return Result.Failure<T>(error);
+    }
+
+    protected Result<T, E> GetSuccessValueErrorResult(IError _)
+    {
+        funcExecuted.Should().BeFalse();
+
+        funcExecuted = true;
+        return Result.Success<T, E>(T.Value);
+    }
 
-        protected Result<T> GetSuccessValueResult(string _)
-        {
-            funcExecuted.Should().BeFalse();
-
-            funcExecuted = true;
-            return Result.Success(T.Value);
-        }
-
-        protected Result<T> GetErrorValueResult(string error)
-        {
-            funcExecuted.Should().BeFalse();
-
-            funcExecuted = true;
-            return Result.Failure<T>(error);
-        }
-
-        protected Result<T, E> GetSuccessValueErrorResult(string _)
-        {
-            funcExecuted.Should().BeFalse();
-
-            funcExecuted = true;
-            return Result.Success<T, E>(T.Value);
-        }
-
-        protected Result<T, E> GetErrorValueErrorResult(string _)
-        {
-            funcExecuted.Should().BeFalse();
-
-            funcExecuted = true;
-            return Result.Failure<T, E>(E.Value);
-        }
-
-        protected Result<T, E2> GetSuccessValueErrorResult(E _)
-        {
-            funcExecuted.Should().BeFalse();
-
-            funcExecuted = true;
-            return Result.Success<T, E2>(T.Value);
-        }
-
-        protected Result<T, E2> GetErrorValueErrorResult(E _)
-        {
-            funcExecuted.Should().BeFalse();
-
-            funcExecuted = true;
-            return Result.Failure<T, E2>(E2.Value);
-        }
-
-        protected Task<Result> GetSuccessResultTask(string error) => GetSuccessResult(error).AsTask();
-
-        protected Task<Result> GetErrorResultTask(string error) => GetErrorResult(error).AsTask();
-
-        protected Task<Result> GetSuccessResultTask(E error) => GetSuccessResult(error).AsTask();
-
-        protected Task<Result> GetErrorResultTask(E error) => GetErrorResult(error).AsTask();
-
-        protected Task<UnitResult<E>> GetSuccessUnitResultTask(string error) => GetSuccessUnitResult(error).AsTask();
-
-        protected Task<UnitResult<E>> GetErrorUnitResultTask(string error) => GetErrorUnitResult(error).AsTask();
-
-        protected Task<UnitResult<E2>> GetSuccessUnitResultTask(E error) => GetSuccessUnitResult(error).AsTask();
-
-        protected Task<UnitResult<E2>> GetErrorUnitResultTask(E error) => GetErrorUnitResult(error).AsTask();
-
-        protected Task<Result<T>> GetSuccessValueResultTask(string error) => GetSuccessValueResult(error).AsTask();
-
-        protected Task<Result<T>> GetErrorValueResultTask(string error) => GetErrorValueResult(error).AsTask();
-
-        protected Task<Result<T, E>> GetSuccessValueErrorResultTask(string error) => GetSuccessValueErrorResult(error).AsTask();
-
-        protected Task<Result<T, E>> GetErrorValueErrorResultTask(string error) => GetErrorValueErrorResult(error).AsTask();
-
-        protected Task<Result<T, E2>> GetSuccessValueErrorResultTask(E error) => GetSuccessValueErrorResult(error).AsTask();
-
-        protected Task<Result<T, E2>> GetErrorValueErrorResultTask(E error) => GetErrorValueErrorResult(error).AsTask();
-
-        protected ValueTask<Result> GetSuccessResultValueTask(string error) => GetSuccessResult(error).AsValueTask();
-
-        protected ValueTask<Result> GetErrorResultValueTask(string error) => GetErrorResult(error).AsValueTask();
-
-        protected ValueTask<Result> GetSuccessResultValueTask(E error) => GetSuccessResult(error).AsValueTask();
-
-        protected ValueTask<Result> GetErrorResultValueTask(E error) => GetErrorResult(error).AsValueTask();
-
-        protected ValueTask<UnitResult<E>> GetSuccessUnitResultValueTask(string error) => GetSuccessUnitResult(error).AsValueTask();
-
-        protected ValueTask<UnitResult<E>> GetErrorUnitResultValueTask(string error) => GetErrorUnitResult(error).AsValueTask();
-
-        protected ValueTask<UnitResult<E2>> GetSuccessUnitResultValueTask(E error) => GetSuccessUnitResult(error).AsValueTask();
-
-        protected ValueTask<UnitResult<E2>> GetErrorUnitResultValueTask(E error) => GetErrorUnitResult(error).AsValueTask();
-
-        protected ValueTask<Result<T>> GetSuccessValueResultValueTask(string error) => GetSuccessValueResult(error).AsValueTask();
-
-        protected ValueTask<Result<T>> GetErrorValueResultValueTask(string error) => GetErrorValueResult(error).AsValueTask();
-
-        protected ValueTask<Result<T, E>> GetSuccessValueErrorResultValueTask(string error) => GetSuccessValueErrorResult(error).AsValueTask();
-
-        protected ValueTask<Result<T, E>> GetErrorValueErrorResultValueTask(string error) => GetErrorValueErrorResult(error).AsValueTask();
-
-        protected ValueTask<Result<T, E2>> GetSuccessValueErrorResultValueTask(E error) => GetSuccessValueErrorResult(error).AsValueTask();
-
-        protected ValueTask<Result<T, E2>> GetErrorValueErrorResultValueTask(E error) => GetErrorValueErrorResult(error).AsValueTask();
-        
-        protected void AssertFailure(Result output, bool executed = false)
-        {
-            funcExecuted.Should().Be(executed);
-            output.IsFailure.Should().BeTrue();
-            output.Error.Should().Be(ErrorMessage);
-        }
-
-        protected void AssertFailure(Result<K> output, bool executed = false)
-        {
-            funcExecuted.Should().Be(executed);
-            output.IsFailure.Should().BeTrue();
-            output.Error.Should().Be(ErrorMessage);
-        }
-
-        protected void AssertFailure(Result<K, E> output, bool executed = false)
-        {
-            funcExecuted.Should().Be(executed);
-            output.IsFailure.Should().BeTrue();
-            output.Error.Should().Be(E.Value);
-        }
-
-        protected void AssertFailure(UnitResult<E> output, bool executed = false)
-        {
-            funcExecuted.Should().Be(executed);
-            output.IsFailure.Should().BeTrue();
-            output.Error.Should().Be(E.Value);
-        }
-
-        protected void AssertFailure(UnitResult<E2> output, bool executed = false)
-        {
-            funcExecuted.Should().Be(executed);
-            output.IsFailure.Should().BeTrue();
-            output.Error.Should().Be(E2.Value);
-        }
-
-        protected void AssertSuccess(Result output, bool executed = true)
-        {
-            funcExecuted.Should().Be(executed);
-            output.IsSuccess.Should().BeTrue();
-        }
-
-        protected void AssertSuccess(Result<K> output, bool executed = true)
-        {
-            funcExecuted.Should().Be(executed);
-            output.IsSuccess.Should().BeTrue();
-            output.Value.Should().Be(K.Value);
-        }
-
-        protected void AssertSuccess(Result<K, E> output, bool executed = true)
-        {
-            funcExecuted.Should().Be(executed);
-            output.IsSuccess.Should().BeTrue();
-            output.Value.Should().Be(K.Value);
-        }
-
-        protected void AssertSuccess(UnitResult<E> output, bool executed = true)
-        {
-            funcExecuted.Should().Be(executed);
-            output.IsSuccess.Should().BeTrue();
-        }
-
-        protected void AssertSuccess(UnitResult<E2> output, bool executed = true)
-        {
-            funcExecuted.Should().Be(executed);
-            output.IsSuccess.Should().BeTrue();
-        }
+    protected Result<T, E> GetErrorValueErrorResult(IError _)
+    {
+        funcExecuted.Should().BeFalse();
+
+        funcExecuted = true;
+        return Result.Failure<T, E>(E.Value);
+    }
+
+    protected Result<T, E2> GetSuccessValueErrorResult(E _)
+    {
+        funcExecuted.Should().BeFalse();
+
+        funcExecuted = true;
+        return Result.Success<T, E2>(T.Value);
+    }
+
+    protected Result<T, E2> GetErrorValueErrorResult(E _)
+    {
+        funcExecuted.Should().BeFalse();
+
+        funcExecuted = true;
+        return Result.Failure<T, E2>(E2.Value);
+    }
+
+    protected Task<Result> GetSuccessResultTask(IError error) => GetSuccessResult(error).AsTask();
+
+    protected Task<Result> GetErrorResultTask(IError error) => GetErrorResult(error).AsTask();
+
+    protected Task<Result> GetSuccessResultTask(E error) => GetSuccessResult(error).AsTask();
+
+    protected Task<Result> GetErrorResultTask(E error) => GetErrorResult(error).AsTask();
+
+    protected Task<Result<T>> GetSuccessValueResultTask(IError error) => GetSuccessValueResult(error).AsTask();
+
+    protected Task<Result<T>> GetErrorValueResultTask(IError error) => GetErrorValueResult(error).AsTask();
+
+    protected Task<Result<T, E>> GetSuccessValueErrorResultTask(IError error) => GetSuccessValueErrorResult(error).AsTask();
+
+    protected Task<Result<T, E>> GetErrorValueErrorResultTask(IError error) => GetErrorValueErrorResult(error).AsTask();
+
+    protected Task<Result<T, E2>> GetSuccessValueErrorResultTask(E error) => GetSuccessValueErrorResult(error).AsTask();
+
+    protected Task<Result<T, E2>> GetErrorValueErrorResultTask(E error) => GetErrorValueErrorResult(error).AsTask();
+
+    protected void AssertFailure(Result output, bool executed = false)
+    {
+        funcExecuted.Should().Be(executed);
+        output.IsFailure.Should().BeTrue();
+        output.Error.Should().Be(ErrorMessage);
+    }
+
+    protected void AssertFailure(Result<K> output, bool executed = false)
+    {
+        funcExecuted.Should().Be(executed);
+        output.IsFailure.Should().BeTrue();
+        output.Error.Should().Be(ErrorMessage);
+    }
+
+    protected void AssertFailure(Result<K, E> output, bool executed = false)
+    {
+        funcExecuted.Should().Be(executed);
+        output.IsFailure.Should().BeTrue();
+        output.Error.Should().Be(E.Value);
+    }
+
+    protected void AssertFailure(Result<T, E> output, bool executed = false)
+    {
+        funcExecuted.Should().Be(executed);
+        output.IsFailure.Should().BeTrue();
+        output.Error.Should().Be(E.Value);
+    }
+
+    protected void AssertFailure<TValue, EValue>(Result<TValue, EValue> output, bool executed = false)
+        where EValue : IError
+    {
+        funcExecuted.Should().Be(executed);
+        output.IsFailure.Should().BeTrue();
+        output.Error.Should().Be(E.Value);
+    }
+
+    protected void AssertSuccess(Result output, bool executed = true)
+    {
+        funcExecuted.Should().Be(executed);
+        output.IsSuccess.Should().BeTrue();
+    }
+
+    protected void AssertSuccess(Result<K> output, bool executed = true)
+    {
+        funcExecuted.Should().Be(executed);
+        output.IsSuccess.Should().BeTrue();
+        output.Value.Should().Be(K.Value);
+    }
+
+    protected void AssertSuccess(Result<K, E> output, bool executed = true)
+        => AssertSuccess<K, E>(output, executed);
+
+    protected void AssertSuccess(Result<T, E> output, bool executed = true)
+        => AssertSuccess<T, E>(output, executed);
+
+    protected void AssertSuccess<TValue, EValue>(Result<TValue, EValue> output, bool executed = true)
+        where EValue : IError
+    {
+        funcExecuted.Should().Be(executed);
+        output.IsSuccess.Should().BeTrue();
+        output.Value.Should().Be(K.Value);
     }
 }

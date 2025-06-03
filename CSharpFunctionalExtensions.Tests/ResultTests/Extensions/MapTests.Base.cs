@@ -27,10 +27,6 @@ namespace CSharpFunctionalExtensions.Tests.ResultTests.Extensions
 
         protected Task<K> Task_Func_T_K(T value) => Func_T_K(value).AsTask();
 
-        protected ValueTask<K> ValueTask_Func_K() => Func_K().AsValueTask();
-
-        protected ValueTask<K> ValueTask_Func_T_K(T value) => Func_T_K(value).AsValueTask();
-
         protected readonly string ContextMessage = "Context data";
     }
 }

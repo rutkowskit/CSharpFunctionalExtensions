@@ -96,50 +96,6 @@ namespace CSharpFunctionalExtensions.Tests.ResultTests.Extensions
             return OnFailure_E_K(error).AsTask();
         }
         
-        protected ValueTask OnFailure_String_ValueTask(string arg)
-        {
-            _failure = true;
-            return ValueTask.CompletedTask;
-        }
-        
-        protected ValueTask OnSuccess_ValueTask()
-        {
-            OnSuccess();
-            return ValueTask.CompletedTask;
-        }
-        
-        protected ValueTask<K> OnSuccess_K_ValueTask()
-        {
-            return OnSuccess_K().AsValueTask();
-        }
-        
-        protected ValueTask<K> OnFailure_String_K_ValueTask(string arg)
-        {
-            return OnFailure_String_K(arg).AsValueTask();
-        }
-        
-        protected ValueTask OnSuccess_T_ValueTask(T value)
-        {
-            _success = true;
-            return ValueTask.CompletedTask;
-        }
-        
-        protected ValueTask OnFailure_E_ValueTask(E error)
-        {
-            OnFailure_E(error);
-            return ValueTask.CompletedTask;
-        }
-        
-        protected ValueTask<K> OnSuccess_T_K_ValueTask(T value)
-        {
-            return OnSuccess_T_K(value).AsValueTask();
-        }
-        
-        protected ValueTask<K> OnFailure_E_K_ValueTask(E error)
-        {
-            return OnFailure_E_K(error).AsValueTask();
-        }
-        
         protected void AssertSuccess()
         {
             _success.Should().BeTrue();

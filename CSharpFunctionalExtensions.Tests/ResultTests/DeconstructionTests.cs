@@ -1,10 +1,10 @@
-﻿using FluentAssertions;
-using System;
+﻿using CSharpFunctionalExtensions.Errors;
+using FluentAssertions;
 using Xunit;
 
 namespace CSharpFunctionalExtensions.Tests.ResultTests
 {
-    public class DeconstructionTests
+    public class DeconstructionTests : TestBase
     {
         [Fact]
         public void Can_deconstruct_non_generic_Ok_to_isSuccess_and_isFailure()
@@ -105,7 +105,7 @@ namespace CSharpFunctionalExtensions.Tests.ResultTests
         [Fact]
         public void Can_deconstruct_generic_Ok_with_generic_error_to_isSuccess_and_isFailure()
         {
-            var (isSuccess, isFailure) = Result.Success<bool, Exception>(true);
+            var (isSuccess, isFailure) = Result.Success<bool, E>(true);
 
             isSuccess.Should().Be(true);
             isFailure.Should().Be(false);
@@ -114,8 +114,8 @@ namespace CSharpFunctionalExtensions.Tests.ResultTests
         [Fact]
         public void Can_deconstruct_generic_Fail_with_generic_error_to_isSuccess_and_isFailure()
         {
-            var exception = new Exception("fail");
-            var (isSuccess, isFailure) = Result.Failure<bool, Exception>(exception);
+            var exception = new Error("fail");
+            var (isSuccess, isFailure) = Result.Failure<bool, Error>(exception);
 
             isSuccess.Should().Be(false);
             isFailure.Should().Be(true);
@@ -124,7 +124,7 @@ namespace CSharpFunctionalExtensions.Tests.ResultTests
         [Fact]
         public void Can_deconstruct_generic_Ok_with_generic_error_to_isSuccess_and_isFailure_and_value()
         {
-            var (isSuccess, isFailure, value) = Result.Success<int, Exception>(100);
+            var (isSuccess, isFailure, value) = Result.Success<int, E>(100);
 
             isSuccess.Should().Be(true);
             isFailure.Should().Be(false);
@@ -134,7 +134,7 @@ namespace CSharpFunctionalExtensions.Tests.ResultTests
         [Fact]
         public void Can_deconstruct_generic_Ok_with_generic_error_to_isSuccess_and_isFailure_and_value_with_ignored_error()
         {
-            var (isSuccess, isFailure, value, _) = Result.Success<int, Exception>(100);
+            var (isSuccess, isFailure, value, _) = Result.Success<int, Error>(100);
 
             isSuccess.Should().Be(true);
             isFailure.Should().Be(false);
@@ -144,7 +144,7 @@ namespace CSharpFunctionalExtensions.Tests.ResultTests
         [Fact]
         public void Can_deconstruct_generic_Ok_with_generic_error_to_isSuccess_and_isFailure_and_error_with_ignored_value()
         {
-            var (isSuccess, isFailure, _, error) = Result.Success<int, Exception>(100);
+            var (isSuccess, isFailure, _, error) = Result.Success<int, Error>(100);
 
             isSuccess.Should().Be(true);
             isFailure.Should().Be(false);
@@ -154,8 +154,8 @@ namespace CSharpFunctionalExtensions.Tests.ResultTests
         [Fact]
         public void Can_deconstruct_generic_Fail_with_generic_error_to_isSuccess_and_isFailure_and_error_with_ignored_value()
         {
-            var exception = new Exception("fail");
-            var (isSuccess, isFailure, _, error) = Result.Failure<bool, Exception>(exception);
+            var exception = TextError.Create("fail");
+            var (isSuccess, isFailure, _, error) = Result.Failure<bool, TextError>(exception);
 
             isSuccess.Should().Be(false);
             isFailure.Should().Be(true);

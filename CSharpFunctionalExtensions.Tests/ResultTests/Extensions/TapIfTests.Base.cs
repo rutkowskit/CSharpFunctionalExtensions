@@ -84,42 +84,6 @@ namespace CSharpFunctionalExtensions.Tests.ResultTests.Extensions
             return Result.Success<K, E>(K.Value).AsTask();
         }
 
-        protected ValueTask ValueTask_Action()
-        {
-            actionExecuted = true;
-            return ValueTask.CompletedTask;
-        }
-
-        protected ValueTask ValueTask_Action_T(T _)
-        {
-            actionExecuted = true;
-            return ValueTask.CompletedTask;
-        }
-
-        protected ValueTask ValueTask_Action_T(bool _)
-        {
-            actionExecuted = true;
-            return ValueTask.CompletedTask;
-        }
-        
-        protected ValueTask<Result> ValueTask_Func_Result(bool _)
-        {
-            actionExecuted = true;
-            return Result.Success().AsValueTask();
-        }
-
-        protected ValueTask<Result<K>> ValueTask_Func_Result_K(bool _)
-        {
-            actionExecuted = true;
-            return Result.Success(K.Value).AsValueTask();
-        }
-
-        protected ValueTask<Result<K, E>> ValueTask_Func_Result_K_E(bool _)
-        {
-            actionExecuted = true;
-            return Result.Success<K, E>(K.Value).AsValueTask();
-        }
-
         protected bool Predicate(bool b)
         {
             predicateExecuted = true;

@@ -8,7 +8,7 @@ public class EnsureNotNullTests_Base : TestBase
     protected bool factoryExecuted;
 
     protected Func<E> GetErrorFactory<E>(E e)
-    {
+where E : IError    {
         return () =>
         {
             factoryExecuted = true;
@@ -17,9 +17,7 @@ public class EnsureNotNullTests_Base : TestBase
         };
     }
 
-    protected Func<Task<E>> GetTaskErrorFactory<E>(E e) => GetErrorFactory(Task.FromResult(e));
-
-    protected Func<ValueTask<E>> GetValueTaskErrorFactory<E>(E e) => GetErrorFactory(ValueTask.FromResult(e));
+    protected Func<Task<E>> GetTaskErrorFactory<E>(E e) where E : IError=> GetErrorFactory(Task.FromResult(e));
 
     protected struct V
     {

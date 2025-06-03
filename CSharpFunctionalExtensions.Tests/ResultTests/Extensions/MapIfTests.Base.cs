@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using FluentAssertions;
 
@@ -28,11 +28,6 @@ namespace CSharpFunctionalExtensions.Tests.ResultTests.Extensions
         protected Func<T, Task<T>> GetTaskAction()
         {
             return t => Task.FromResult(GetAction()(t));
-        }
-
-        protected Func<T, ValueTask<T>> GetValueTaskAction()
-        {
-            return t => ValueTask.FromResult(GetAction()(t));
         }
 
         protected Func<T, bool> GetValuePredicate(bool value)

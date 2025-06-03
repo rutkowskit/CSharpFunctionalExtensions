@@ -115,7 +115,7 @@ namespace CSharpFunctionalExtensions.Tests.ResultTests
         }
 
         private void Can_create_a_generic_version_with_a_generic_error_typed<E>()
-        {
+where E : IError        {
             var myClass = new MyClass();
 
             Result<MyClass, E> result = Result.Success<MyClass, E>(myClass);

@@ -1,67 +1,63 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
-namespace CSharpFunctionalExtensions.Tests.ResultTests
+namespace CSharpFunctionalExtensions.Tests.ResultTests;
+
+public abstract class TestBase
 {
-    public abstract class TestBase
+    protected const string ErrorMessage = "Error Message";
+
+    protected const string ErrorMessage2 = "Error Message2";
+
+    protected class T
     {
-        protected const string ErrorMessage = "Error Message";
+        public static readonly T Value = new T();
 
-        protected const string ErrorMessage2 = "Error Message2";
+        public static readonly T Value2 = new T();
+    }
 
-        protected class T
+    protected class K
+    {
+        public static readonly K Value = new K();
+
+        public static readonly K Value2 = new K();
+    }
+
+    protected class E : Error
+    {
+        public static readonly E Value = new E();
+
+        public static readonly E Value2 = new E();
+    }
+
+    protected class E2 : Error
+    {
+        public static readonly E2 Value = new E2();
+    }
+
+    protected class Error : IError
+    {
+        private readonly List<string> _errors = new List<string>();
+
+        public Error()
         {
-            public static readonly T Value = new T();
-
-            public static readonly T Value2 = new T();
         }
 
-        protected class K
+        public Error(string error)
+            : this(new List<string> { error })
         {
-            public static readonly K Value = new K();
-            
-            public static readonly K Value2 = new K();
         }
 
-        protected class E : Error
+        public Error(List<string> errors)
         {
-            public static readonly E Value = new E();
-
-            public static readonly E Value2 = new E();
+            _errors = errors ?? throw new ArgumentNullException(nameof(errors));
         }
 
-        protected class E2 : Error
+        public IReadOnlyCollection<string> Errors => _errors;
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            public static readonly E2 Value = new E2();
-        }
-
-        protected class Error : ICombine
-        {
-            private readonly List<string> _errors = new List<string>();
-
-            public Error()
-            {
-            }
-
-            public Error(string error)
-                : this(new List<string> { error })
-            {
-            }
-
-            public Error(List<string> errors)
-            {
-                _errors = errors ?? throw new ArgumentNullException(nameof(errors));
-            }
-
-            public IReadOnlyCollection<string> Errors => _errors;
-
-            public ICombine Combine(ICombine value)
-            {
-                var errorMsg = value as Error;
-                var errorList = new List<string>(errorMsg._errors);
-                errorList.AddRange(_errors);
-                return new Error(errorList);
-            }
         }
     }
 }

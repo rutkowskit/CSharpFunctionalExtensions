@@ -32,17 +32,5 @@ namespace CSharpFunctionalExtensions.Tests.ResultTests.Extensions
             actionExecuted = true;
             return Task.CompletedTask;
         }
-
-        protected ValueTask ValueTask_Action()
-        {
-            actionExecuted = true;
-            return ValueTask.CompletedTask;
-        }
-
-        protected ValueTask ValueTask_Action_T(T _)
-        {
-            actionExecuted = true;
-            return ValueTask.CompletedTask;
-        }
     }
 }

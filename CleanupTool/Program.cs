@@ -6,10 +6,13 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 
 
-const string CodeDirectory = @"E:\Projects\Contributions\CSharpFunctionalExtensions\CSharpFunctionalExtensions";
+//const string CodeDirectory = @"E:\Projects\Contributions\CSharpFunctionalExtensions\CSharpFunctionalExtensions";
+const string CodeDirectory = @"e:\Projects\Contributions\CSharpFunctionalExtensions\CSharpFunctionalExtensions.Tests";
 
 var fileEnumerator = Directory.EnumerateFiles(CodeDirectory, "*.cs", SearchOption.AllDirectories);
+
 //var rewriter = new MethodByTypeRemover("UnitResult");
+//var rewriter = new MethodByTypeRemover("ValueTask");
 var rewriter = new AddIErrorConstraintRewriter();
 
 foreach (var file in fileEnumerator)
@@ -96,8 +99,6 @@ class AddIErrorConstraintRewriter : CSharpSyntaxRewriter
     }
 }
 
-
-
 class MethodByTypeRemover : CSharpSyntaxRewriter
 {
     private readonly string _typeNamePattern;
@@ -110,14 +111,18 @@ class MethodByTypeRemover : CSharpSyntaxRewriter
     public override SyntaxNode? VisitMethodDeclaration(MethodDeclarationSyntax node)
     {
         // Check if return type is string
-        bool returnsString = MatchesTypeName(node.ReturnType);
+        bool returnsObjectOfType = MatchesTypeName(node.ReturnType);
 
         // Check if any parameter is string
-        bool hasStringParameter = node.ParameterList.Parameters
+        bool hasTypeInParameter = node.ParameterList.Parameters
             .Any(param => MatchesTypeName(param.Type));
 
+        bool usesType = node.DescendantNodes()
+            .OfType<IdentifierNameSyntax>()
+            .Any(identifier => MatchesTypeName(identifier.Identifier));
+
         // If the method returns string or has a string parameter, remove it (return null)
-        if (returnsString || hasStringParameter)
+        if (hasTypeInParameter || returnsObjectOfType || usesType)
         {
             Interlocked.Increment(ref _removedCount);
             return null; // Returning null removes the node
@@ -126,8 +131,13 @@ class MethodByTypeRemover : CSharpSyntaxRewriter
         // Otherwise, keep the method unchanged
         return base.VisitMethodDeclaration(node);
     }
-    private bool MatchesTypeName(TypeSyntax? type)
+    private bool MatchesTypeName(TypeSyntax? type) => MatchesTypeName(type?.ToString());
+    private bool MatchesTypeName(SyntaxToken? type) => MatchesTypeName(type?.Text);
+
+    private bool MatchesTypeName(string? typeName)
     {
-        return type is not null && Regex.IsMatch(type.ToString(), _typeNamePattern, RegexOptions.Singleline | RegexOptions.IgnoreCase);
+        return string.IsNullOrWhiteSpace(typeName)
+            ? false
+            : Regex.IsMatch(typeName, _typeNamePattern, RegexOptions.Singleline | RegexOptions.IgnoreCase);
     }
 }
